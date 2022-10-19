@@ -1,8 +1,7 @@
 {
   "profiles": {
     "FontParserApp": {
-      "commandName": "Project",
-      "commandLineArgs": "c:\\Windows\\Fonts\\verdana.ttf"
+      "commandName": "Project"
     }
   }
 }

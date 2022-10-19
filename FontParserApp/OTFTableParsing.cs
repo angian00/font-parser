@@ -1,5 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System;
+using System.Diagnostics;
+using System.Reflection.Emit;
+using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
+using System.Runtime.Intrinsics.X86;
 
 namespace FontParserApp
 {
@@ -16,7 +21,7 @@ namespace FontParserApp
 
             UInt16 version = Read16();
             UInt16 numEncSubtables = Read16();
-            //EncodingRecord encodingRecords[numTables]
+
             for (int i = 0; i < numEncSubtables; i++)
             {
                 UInt16 platformId = Read16();
@@ -34,13 +39,15 @@ namespace FontParserApp
             _currOffset = subtableOffset;
 
             UInt16 format = Read16();
+            UInt16 length;
+            UInt16 language;
 
             switch (format)
             {
                 case 0x00:
                     //old Macintosh format
-                    UInt16 length = Read16();
-                    UInt16 language = Read16();
+                    length = Read16();
+                    language = Read16();
                     for (UInt16 asciiCode = 0; asciiCode < 256; asciiCode++)
                     {
                         //glyphIdArray[iContour];
@@ -50,9 +57,50 @@ namespace FontParserApp
                     }
                     break;
 
+                case 0x04:
+                    //TODO: format 4 CMAPs
+                    ////segment mapping to delta values
+                    //length = Read16();
+                    //language = Read16(); //ignore
+                    //UInt16 segCount = (UInt16)(Read16() >> 1);
+                    
+                    //UInt16 searchRange = Read16(); //ignore
+                    //UInt16 entrySelector = Read16(); //ignore
+                    //UInt16 rangeShift = Read16(); //ignore
+
+                    //UInt16[] endCodes = new UInt16[segCount];
+                    //for (int i=0; i < segCount; i++)
+                    //    endCodes[i] = Read16();
+
+                    //UInt16 reservedPad = Read16();
+
+                    //UInt16[] startCodes = new UInt16[segCount];
+                    //for (int i = 0; i < segCount; i++)
+                    //    startCodes[i] = Read16();
+
+                    //Int16[] idDelta = new Int16[segCount];
+                    //for (int i = 0; i < segCount; i++)
+                    //    idDelta[i] = Read16Signed();
+
+                    //UInt16[] idRangeOffsets = new UInt16[segCount];
+                    //for (int i = 0; i < segCount; i++)
+                    //    idRangeOffsets[i] = Read16();
+
+                    //UInt16 glyphIdArray[] = Read16();
+
+
+                    //for (UInt16 asciiCode = 0; asciiCode < 256; asciiCode++)
+                    //{
+                    //    //glyphIdArray[iContour];
+                    //    byte glyphIndex = ReadByte();
+                    //    Char2GlyphIndex[(char)asciiCode] = glyphIndex;
+                    //    //Console.WriteLine($" \t '{(Char)asciiCode}' --> {glyphIndex}");
+                    //}
+                    //break;
+
                 default:
                     //ignore
-                    Console.Error.WriteLine($"!! Unknown CMAP format: {format}");
+                    Console.Error.WriteLine($"!! Unsupported CMAP format: {format}");
                     break;
             }
 
@@ -301,7 +349,7 @@ namespace FontParserApp
                 UInt32 totOffset = (UInt32)(tableOffset + storageOffset + offset);
                 string strData = Utils.BytesToStr(_rawData, totOffset, length);
 
-                //Console.WriteLine($"-- from [name]: {platformId} {encodingId} {languageId} {nameId} {strData}");
+                Console.WriteLine($"-- from [name]: {platformId} {encodingId} {languageId} {nameId} {strData}");
             }
 
             if (version == 0x01)

@@ -11,13 +11,15 @@
             Console.WriteLine("");
 
 
-            if (args.Length != 1)
-            {
-                Console.Error.WriteLine("  Usage: FontParser <fontfile.otf|fontfile.ttf>");
-                Environment.Exit(1);
-            }
+            //if (args.Length != 1)
+            //{
+            //    Console.Error.WriteLine("  Usage: FontParser <fontfile.otf|fontfile.ttf>");
+            //    Environment.Exit(1);
+            //}
 
-            OpenTypeFont font = new(args[0]);
+            //OpenTypeFont font = new(args[0]);
+            //OpenTypeFont font = new("C:\\Windows\\Fonts\\pala.ttf");
+            OpenTypeFont font = new("c:\\Windows\\Fonts\\verdana.ttf");
 
             font.PrintMainStats();
             //font.PrintTableStats();
@@ -25,7 +27,7 @@
 
             //char ch = 'i';
             //char ch = 'c';
-            char ch = 'b';
+            char ch = 'R';
 
             GlyphData glyphData = font.GetGlyphData(ch);
 
